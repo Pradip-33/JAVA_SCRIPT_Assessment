@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>JavaScript Image Slider with Thumbnail Scroll</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .slider-container {
+      border: 2px solid #ccc;
+      padding: 20px;
+      width: 600px;
+      text-align: center;
+      position: relative;
+    }
+
+    .main-image {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+      margin-bottom: 10px;
+    }
+
+    .thumbnail-wrapper {
+      display: flex;
+      align-items: center;
+      position: relative;
+    }
+
+    .arrow-btn {
+      background-color: rgba(0, 0, 0, 0.6);
+      border: none;
+      color: white;
+      font-size: 24px;
+      padding: 10px;
+      cursor: pointer;
+      z-index: 1;
+    }
+
+    .thumbnail-container {
+      overflow-x: auto;
+      white-space: nowrap;
+      scroll-behavior: smooth;
+      width: 100%;
+    }
+
+    .thumbnail-container::-webkit-scrollbar {
+      display: none; /* Hide scrollbar */
+    }
+
+    .thumbnail {
+      width: 80px;
+      height: 80px;
+      margin: 0 5px;
+      object-fit: cover;
+      display: inline-block;
+      border: 2px solid transparent;
+      cursor: pointer;
+    }
+
+    .thumbnail.active {
+      border-color: #007bff;
+    }
+
+  </style>
+</head>
+<body>
+
+  <h2>JavaScript Image Slider</h2>
+  <div id="slider-root"></div>
+
+  <script>
+    function createImageSlider(images) {
+      const root = document.getElementById('slider-root');
+      let currentIndex = 0;
+
+      const sliderContainer = document.createElement('div');
+      sliderContainer.className = 'slider-container';
+
+      const mainImage = document.createElement('img');
+      mainImage.className = 'main-image';
+      mainImage.src = images[currentIndex];
+      sliderContainer.appendChild(mainImage);
+
+      const thumbnailWrapper = document.createElement('div');
+      thumbnailWrapper.className = 'thumbnail-wrapper';
+
+      const leftBtn = document.createElement('button');
+      leftBtn.className = 'arrow-btn';
+      leftBtn.innerHTML = '&#8249;'; // Left arrow
+
+      const rightBtn = document.createElement('button');
+      rightBtn.className = 'arrow-btn';
+      rightBtn.innerHTML = '&#8250;'; // Right arrow
+
+      const thumbnailContainer = document.createElement('div');
+      thumbnailContainer.className = 'thumbnail-container';
+
+      const thumbnails = [];
+
+      function updateSlider(index) {
+        currentIndex = index;
+        mainImage.src = images[index];
+        thumbnails.forEach((thumb, i) => {
+          thumb.classList.toggle('active', i === index);
+        });
+      }
+
+      leftBtn.onclick = () => {
+        thumbnailContainer.scrollLeft -= 100;
+      };
+
+      rightBtn.onclick = () => {
+        thumbnailContainer.scrollLeft += 100;
+      };
+
+      images.forEach((src, index) => {
+        const thumb = document.createElement('img');
+        thumb.className = 'thumbnail';
+        thumb.src = src;
+        if (index === 0) thumb.classList.add('active');
+        thumb.addEventListener('click', () => updateSlider(index));
+        thumbnails.push(thumb);
+        thumbnailContainer.appendChild(thumb);
+      });
+
+      thumbnailWrapper.appendChild(leftBtn);
+      thumbnailWrapper.appendChild(thumbnailContainer);
+      thumbnailWrapper.appendChild(rightBtn);
+
+      sliderContainer.appendChild(thumbnailWrapper);
+      root.appendChild(sliderContainer);
+    }
+
+    const imageList = [
+      'https://media.architecturaldigest.com/photos/66a914f1a958d12e0cc94a8e/16:9/w_1280,c_limit/DSC_5903.jpg',
+      'https://carwow-uk-wp-3.imgix.net/18015-MC20BluInfinito-scaled-e1707920217641.jpg',
+      'https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDE5fHx8ZW58MHx8fHx8',
+      'https://img.etimg.com/thumb/width-1200,height-1200,imgsize-180003,resizemode-75,msid-69924191/magazines/panache/a-car-enthusiasts-dream-toyota-supra-returns-with-197-horsepower-at-55k.jpg',
+      'https://bauaelectric.com/wp-content/uploads/2023/11/1680x756.jpg',
+      'https://cdn.group.renault.com/ren/in/rangejune/2560x1440.jpg.ximg.xsmall.jpg/8499062efd.jpg'
+    ];
+
+    createImageSlider(imageList);
+  </script>
+
+</body>
+</html>
